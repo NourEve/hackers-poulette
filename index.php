@@ -142,6 +142,9 @@ if (isset($name) && isset($firstname) && isset($email) && isset($comment)) {
             'email' => $email,
             'comment' => $comment
         ]);
+        header("Location: ./confirmation.php");
+        include "./mail.php";
+        send_mail($email);
     } else {
         echo '<script>alert("Error in Google reCAPTACHA")</script>';
     }
