@@ -22,6 +22,7 @@ $arraySave = array();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Hackers-poulette</title>
 </head>
 
@@ -113,6 +114,11 @@ $arraySave = array();
                 }
             }
             ?>
+
+            <div class="g-recaptcha" data-sitekey="6LcmNz4kAAAAAGVgSFoqNuXlGW7UTKXz5KvDagV2">
+            </div>
+            <br>
+
             <input type="submit" value="Send message">
 
         </form>
@@ -122,11 +128,21 @@ $arraySave = array();
 </html>
 <?php
 if (isset($name) && isset($firstname) && isset($email) && isset($comment)) {
-    $insertValue = $conn->prepare('INSERT INTO `form`(name, firstname, email, comment) VALUES (:name, :firstname, :email, :comment)');
-    $insertValue->execute([
-        'name' => $name,
-        'firstname' => $firstname,
-        'email' => $email,
-        'comment' => $comment
-    ]);
+    $recaptcha = $_POST['g-recaptcha-response'];
+    $secret_key = '6LcmNz4kAAAAAFfVqwV0Yri9pXJTO5fZglXSAtjb';
+    $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $recaptcha;
+    $response = file_get_contents($url);
+    $response = json_decode($response);
+    if ($response->success == true) {
+        echo '<script>alert("Google reCAPTACHA verified")</script>';
+        $insertValue = $conn->prepare('INSERT INTO `form`(name, firstname, email, comment) VALUES (:name, :firstname, :email, :comment)');
+        $insertValue->execute([
+            'name' => $name,
+            'firstname' => $firstname,
+            'email' => $email,
+            'comment' => $comment
+        ]);
+    } else {
+        echo '<script>alert("Error in Google reCAPTACHA")</script>';
+    }
 }
