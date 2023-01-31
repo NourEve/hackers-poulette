@@ -37,7 +37,7 @@ $arraySave = array();
             <input type="text" id="name" name="name" value="<?php echo isset($_POST["name"]) ? $_POST["name"] : ''; ?>">
             <br>
             <?php
-            if (!isset($_POST['submit'])) {
+            if (isset($_POST['name'])) {
                 if (empty($_POST['name'])) {
                     echo '<p>Name is required</p>';
                 } else {
@@ -58,7 +58,7 @@ $arraySave = array();
             <input type="text" id="firstname" name="firstname" value="<?php echo isset($_POST["firstname"]) ? $_POST["firstname"] : ''; ?>">
             <br>
             <?php
-            if (!isset($_POST['submit'])) {
+            if (isset($_POST['firstname'])) {
                 if (empty($_POST['firstname'])) {
                     echo '<p>First name is required</p>';
                 } else {
@@ -80,7 +80,7 @@ $arraySave = array();
             <input type="text" id="email" name="email" value="<?php echo isset($_POST["email"]) ? $_POST["email"] : ''; ?>">
             <br>
             <?php
-            if (!isset($_POST['submit'])) {
+            if (isset($_POST['email'])) {
                 if (empty($_POST['email'])) {
                     echo '<p>Email adress is required </p>';
                 } else {
@@ -99,7 +99,7 @@ $arraySave = array();
             <textarea id="comment" name="comment"><?php echo isset($_POST["comment"]) ? $_POST["comment"] : ''; ?></textarea>
             <br>
             <?php
-            if (!isset($_POST['submit'])) {
+            if (isset($_POST['comment'])) {
                 if (empty($_POST['comment'])) {
                     echo '<p>Message is required </p>';
                 } else {
@@ -121,10 +121,12 @@ $arraySave = array();
 
 </html>
 <?php
-$insertValue = $conn->prepare('INSERT INTO `form`(name, firstname, email, comment) VALUES (:name, :firstname, :email, :comment)');
-$insertValue->execute([
-    'name' => $name,
-    'firstname' => $firstname,
-    'email' => $email,
-    'comment' => $comment
-]);
+if (isset($name) && isset($firstname) && isset($email) && isset($comment)) {
+    $insertValue = $conn->prepare('INSERT INTO `form`(name, firstname, email, comment) VALUES (:name, :firstname, :email, :comment)');
+    $insertValue->execute([
+        'name' => $name,
+        'firstname' => $firstname,
+        'email' => $email,
+        'comment' => $comment
+    ]);
+}
